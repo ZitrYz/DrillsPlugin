@@ -1,0 +1,8 @@
+name: Drills
+version: 1.0.0-BETA
+main: drills.Drills
+
+api-version: '1.21'
+
+commands:
+  giveDrill:
