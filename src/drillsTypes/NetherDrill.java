@@ -38,7 +38,7 @@ public class NetherDrill extends DrillItem {
 		this.consChance -= (0.05 * this.drillCoil);
 		
 		this.blocks = BlockList.blocks.get(drillType.NETHER_DRILL);
-		
+		this.blocksBlackList = BlockList.blocksBlackList.get(drillType.NETHER_DRILL);
 	}
 
 	@Override

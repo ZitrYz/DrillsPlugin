@@ -38,7 +38,7 @@ public class OreDrill extends DrillItem {
 		this.consChance -= (0.05 * this.drillCoil);
 		
 		this.blocks = BlockList.blocks.get(drillType.ORE_DRILL);
-		
+		this.blocksBlackList = BlockList.blocksBlackList.get(drillType.ORE_DRILL);
 	}
 
 	@Override

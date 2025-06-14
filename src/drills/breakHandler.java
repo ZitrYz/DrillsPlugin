@@ -1,17 +1,28 @@
 package drills;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import de.tr7zw.nbtapi.NBT;
+import dev.aurelium.auraskills.api.AuraSkillsApi;
+import dev.aurelium.auraskills.api.trait.Traits;
+import dev.aurelium.auraskills.api.user.SkillsUser;
 import drillsTypes.GroundDrill;
 import drillsTypes.NetherDrill;
 import drillsTypes.OreDrill;
@@ -37,13 +48,29 @@ public class breakHandler implements Listener {
 					NetherDrill netherDrillItem = new NetherDrill(itemInHand);
 					if (netherDrillItem.fuel >= netherDrillItem.fuelConsumption) {
 						if (netherDrillItem.blocks.contains(e.getClickedBlock().getType())) {
-							
+							boolean alreadyCasted = false;
 							Block clickedBlock = e.getClickedBlock();
-							
-							for (ItemStack drop : clickedBlock.getDrops()) {	
-								p.getWorld().dropItem(clickedBlock.getLocation(), drop);
+							Collection<ItemStack> drops = clickedBlock.getDrops();
+							Location loc = e.getClickedBlock().getLocation();
+							String worldName = clickedBlock.getWorld().getName();
+							Material clickedBlockMaterial = clickedBlock.getType();
+							clickedBlock.setType(Material.AIR);
+							for (ItemStack drop : drops) {	
+								if (!netherDrillItem.blocksBlackList.contains(clickedBlockMaterial)) {
+									p.getWorld().dropItem(loc, drop);
+									if (!isPlacedByPlayer(worldName, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()) && !alreadyCasted) {
+										AuraSkillsApi auraSkills = AuraSkillsApi.get();
+										SkillsUser user = auraSkills.getUser(e.getPlayer().getUniqueId());
+										double mL = user.getEffectiveTraitLevel(Traits.MINING_LUCK);
+										double random = Math.random() * 100;
+										
+										if (mL > random) {
+											p.getWorld().dropItem(clickedBlock.getLocation(), drop);
+											alreadyCasted = true;
+										}
+									}
+								}
 							}
-							p.breakBlock(clickedBlock);
 							if (doConsumeFuel((int) (netherDrillItem.consChance * 100))) {
 								netherDrillItem.setFuel(netherDrillItem.fuel - netherDrillItem.fuelConsumption, netherDrillItem.maxFuel);
 							}
@@ -56,13 +83,30 @@ public class breakHandler implements Listener {
 					GroundDrill groundDrillItem = new GroundDrill(itemInHand);
 					if (groundDrillItem.fuel >= groundDrillItem.fuelConsumption) {
 						if (groundDrillItem.blocks.contains(e.getClickedBlock().getType())) {
-							
+							boolean alreadyCasted = false;
 							Block clickedBlock = e.getClickedBlock();
-							
-							for (ItemStack drop : clickedBlock.getDrops()) {	
-								p.getWorld().dropItem(clickedBlock.getLocation(), drop);
+							Collection<ItemStack> drops = clickedBlock.getDrops();
+							Location loc = e.getClickedBlock().getLocation();
+							String worldName = clickedBlock.getWorld().getName();
+							Material clickedBlockMaterial = clickedBlock.getType();
+							clickedBlock.setType(Material.AIR);
+							for (ItemStack drop : drops) {	
+								p.getWorld().dropItem(loc, drop);
+								if (!groundDrillItem.blocksBlackList.contains(clickedBlockMaterial)) {
+									if (!isPlacedByPlayer(worldName, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()) && !alreadyCasted) {
+										AuraSkillsApi auraSkills = AuraSkillsApi.get();
+										SkillsUser user = auraSkills.getUser(e.getPlayer().getUniqueId());
+										double mL = user.getEffectiveTraitLevel(Traits.MINING_LUCK);
+										double random = Math.random() * 100;
+										
+										if (mL > random) {
+											p.getWorld().dropItem(clickedBlock.getLocation(), drop);
+											alreadyCasted = true;
+										}
+									}
+								}
 							}
-							p.breakBlock(clickedBlock);
+							clickedBlock.setType(Material.AIR);
 							if (doConsumeFuel((int) (groundDrillItem.consChance * 100))) {
 								groundDrillItem.setFuel(groundDrillItem.fuel - groundDrillItem.fuelConsumption, groundDrillItem.maxFuel);
 							}
@@ -75,17 +119,35 @@ public class breakHandler implements Listener {
 					OreDrill oreDrillItem = new OreDrill(itemInHand);
 					if (oreDrillItem.fuel >= oreDrillItem.fuelConsumption) {
 						if (oreDrillItem.blocks.contains(e.getClickedBlock().getType())) {
-							
+							boolean alreadyCasted = false;
 							Block clickedBlock = e.getClickedBlock();
-							
-							for (ItemStack drop : clickedBlock.getDrops()) {	
-								p.getWorld().dropItem(clickedBlock.getLocation(), drop);
-								p.getWorld().dropItem(clickedBlock.getLocation(), drop);
+							Collection<ItemStack> drops = clickedBlock.getDrops();
+							Location loc = e.getClickedBlock().getLocation();
+							String worldName = clickedBlock.getWorld().getName();
+							Material clickedBlockMaterial = clickedBlock.getType();
+							clickedBlock.setType(Material.AIR);
+							for (ItemStack drop : drops) {	
+								p.getWorld().dropItem(loc, drop);
+								if (!oreDrillItem.blocksBlackList.contains(clickedBlockMaterial)) {
+									p.getWorld().dropItem(loc, drop);
+									if (!isPlacedByPlayer(worldName, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()) && !alreadyCasted) {
+										AuraSkillsApi auraSkills = AuraSkillsApi.get();
+										SkillsUser user = auraSkills.getUser(e.getPlayer().getUniqueId());
+										double mL = user.getEffectiveTraitLevel(Traits.MINING_LUCK);
+										double random = Math.random() * 100;
+										
+										if (mL > random) {
+											p.getWorld().dropItem(clickedBlock.getLocation(), drop);
+											alreadyCasted = true;
+										}
+									}
+								}
 							}
-							p.getWorld().spawn(clickedBlock.getLocation(), ExperienceOrb.class).setExperience(1);;
-							p.breakBlock(clickedBlock);
+						
 							
-
+							p.getWorld().spawn(clickedBlock.getLocation(), ExperienceOrb.class).setExperience(1);;
+							clickedBlock.setType(Material.AIR);
+							
 							if (doConsumeFuel((int) (oreDrillItem.consChance * 100))) {
 								oreDrillItem.setFuel(oreDrillItem.fuel - oreDrillItem.fuelConsumption, oreDrillItem.maxFuel);
 							}
@@ -97,6 +159,43 @@ public class breakHandler implements Listener {
 				}
 			}
 			
+		}
+	}
+	
+	@EventHandler
+	public void onBlockPlacement(BlockPlaceEvent e) {
+		String sql = "INSERT OR IGNORE INTO placed_blocks(world, x, y, z) VALUES(?, ?, ?, ?)";
+		Location loc = e.getBlock().getLocation();
+		try (PreparedStatement ps = Drills.blockTracker.connection.prepareStatement(sql)) {
+		    ps.setString(1, e.getBlock().getWorld().getName());
+		    ps.setInt(2, loc.getBlockX());
+		    ps.setInt(3, loc.getBlockY());
+		    ps.setInt(4, loc.getBlockZ());
+		    ps.executeUpdate();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	@EventHandler
+	public boolean isPlacedByPlayer(String world, int x, int y, int z) {
+		String sql = "SELECT * FROM placed_blocks WHERE world=? AND x=? AND y=? AND z=?";
+		try (PreparedStatement ps = Drills.blockTracker.connection.prepareStatement(sql)) {
+		    ps.setString(1, world);
+		    ps.setInt(2, x);
+		    ps.setInt(3, y);
+		    ps.setInt(4, z);
+
+		    ResultSet rs = ps.executeQuery();
+		    if (rs.next()) {
+		    	Bukkit.broadcastMessage("f");
+		        return true;
+		    } else {
+		    	return false;
+		    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 	

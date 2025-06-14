@@ -24,6 +24,7 @@ public abstract class DrillItem implements Listener {
 	protected ItemStack drillItem;
 
 	protected List<Material> blocks;
+	protected List<Material> blocksBlackList;
 	
 	public ItemStack createDrillItem(String name, int maxFuel, drillType drillTypeD) {
 		ItemStack drillItem = new ItemStack(Material.PRISMARINE_SHARD, 1);

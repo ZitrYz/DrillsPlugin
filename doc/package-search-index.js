@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"blockPlaceTracker"},{"l":"commands"},{"l":"drills"},{"l":"drillsTypes"},{"l":"drillUpgrades"}];updateSearchResults();

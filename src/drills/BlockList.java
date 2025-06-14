@@ -124,6 +124,17 @@ public class BlockList {
 				Material.AMETHYST_CLUSTER
 		));
 	}};
-	
+	@SuppressWarnings("serial")
+	public static Map<drillType, List<Material>> blocksBlackList = new HashMap<drillType, List<Material>>() {{
+		put(drillType.NETHER_DRILL, Arrays.asList(
+		));
+		put(drillType.GROUND_DRILL, Arrays.asList(
+		));
+		put(drillType.ORE_DRILL, Arrays.asList(
+				Material.RAW_COPPER_BLOCK,
+				Material.RAW_IRON_BLOCK,
+				Material.RAW_GOLD_BLOCK
+		));
+	}};
 
 }

@@ -39,6 +39,7 @@ public class GroundDrill extends DrillItem {
 		this.consChance -= (0.05 * this.drillCoil);
 		
 		this.blocks = BlockList.blocks.get(drillType.GROUND_DRILL);
+		this.blocksBlackList = BlockList.blocksBlackList.get(drillType.GROUND_DRILL);
 		
 	}
 
